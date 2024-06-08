@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { CategoryModule } from './modules/category/category.module';
 import { QuestionModule } from './modules/question/question.module';
 import { PostModule } from '@/modules/post/post.module';
+import { PostLikeModule } from '@/modules/post-like/post-like.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PostModule } from '@/modules/post/post.module';
     CategoryModule,
     QuestionModule,
     PostModule,
+    PostLikeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
