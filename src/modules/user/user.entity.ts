@@ -1,8 +1,10 @@
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from '@/common/base.entity';
 import { Product } from '@/modules/products/products.entity';
+import { Comment } from '@/modules/comment/comment.entity';
 
 import { Entity, Column, OneToMany } from 'typeorm';
+import { Post } from '@/modules/post/post.entity';
 
 enum ROLES {
   ADMIN = 'ADMIN',
@@ -11,9 +13,6 @@ enum ROLES {
 }
 @Entity()
 export class User extends BaseEntity {
-  save() {
-    throw new Error('Method not implemented.');
-  }
   @Column('text')
   firstName: string;
 
@@ -36,4 +35,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }
