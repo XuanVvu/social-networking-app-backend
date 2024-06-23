@@ -1,3 +1,4 @@
+import { Photo } from '@/modules/photo/photo.entity';
 import { BaseEntity } from '@/common/base.entity';
 import {
   Entity,
@@ -21,5 +22,8 @@ export class Post extends BaseEntity {
   comments: Comment[];
 
   @OneToMany(() => PostLike, (postLike) => postLike.post)
-  postLike: PostLike;
+  postLikes: PostLike[];
+
+  @OneToMany(() => Photo, (photo) => photo.post)
+  photos: Photo[];
 }

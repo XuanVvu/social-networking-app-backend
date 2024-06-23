@@ -7,6 +7,6 @@ export class PostLike extends BaseEntity {
   @ManyToOne(() => User, (user) => user.postLike)
   user: User;
 
-  @ManyToOne(() => Post, (post) => post.postLike)
+  @ManyToOne(() => Post, (post) => post.postLikes)
   post: Post;
 }

@@ -43,6 +43,6 @@ export class PhotoController {
     body.createdAt = new Date();
     body.updatedAt = new Date();
     body.deletedAt = new Date();
-    return this.photoService.updatePhoto(id, body);
+    // return this.photoService.updatePhoto(id, body);
   }
 }

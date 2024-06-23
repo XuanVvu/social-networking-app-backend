@@ -5,8 +5,6 @@ import { AppService } from './app.service';
 import { PhotoModule } from './modules/photo/photo.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UserModule } from './modules/user/user.module';
-import { CategoryModule } from './modules/category/category.module';
-import { QuestionModule } from './modules/question/question.module';
 import { PostModule } from '@/modules/post/post.module';
 import { PostLikeModule } from '@/modules/post-like/post-like.module';
 
@@ -27,8 +25,6 @@ import { PostLikeModule } from '@/modules/post-like/post-like.module';
     UserModule,
     PhotoModule,
     ProductsModule,
-    CategoryModule,
-    QuestionModule,
     PostModule,
     PostLikeModule,
   ],
