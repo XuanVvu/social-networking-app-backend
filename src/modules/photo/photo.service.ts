@@ -39,12 +39,12 @@ export class PhotoService {
     return this.photoRepository.remove(photo);
   }
 
-  async updatePhoto(id: number, photo: Photo): Promise<Photo> {
-    const photoUPdate = await this.findPhotoById(id);
-    if (!photoUPdate) {
-      throw new HttpException('Photo does not exist', 404);
-    }
-    await this.photoRepository.update(id, photo);
-    return this.photoRepository.findOneBy({ id });
-  }
+  // async updatePhoto(id: number, photo: Photo): Promise<Photo> {
+  //   const photoUPdate = await this.findPhotoById(id);
+  //   if (!photoUPdate) {
+  //     throw new HttpException('Photo does not exist', 404);
+  //   }
+  //   await this.photoRepository.update(id, photo);
+  //   return this.photoRepository.findOneBy({ id });
+  // }
 }
