@@ -10,6 +10,7 @@ import {
   Put,
   Req,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,8 +25,10 @@ import { LoginDto } from './dto/LoginUser.dto';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import { HttpExceptionFilter } from '@/shared/helpers/HttpExceptionFilter';
 
 @Controller('api/v1/users')
+// @UseFilters(HttpExceptionFilter)
 export class UserController {
   constructor(
     private userService: UserService,
@@ -56,8 +59,22 @@ export class UserController {
   }
 
   @Post('/login')
-  loginUser(@Body() requestBody: LoginDto) {
-    return this.authService.login(requestBody);
+  async loginUser(@Body() requestBody: LoginDto) {
+    const result = (await this.authService.login(requestBody)) as any;
+    console.log(result);
+
+    if (!result.success) {
+      // Xử lý lỗi đăng nhập (ví dụ: sai mật khẩu)
+      return {
+        success: false,
+        message: 'Thông tin đăng nhập không chính xác',
+      };
+    }
+    return {
+      success: true,
+      message: 'Đăng nhập thành công',
+      data: result.data,
+    };
   }
 
   @Put('/update/:id')

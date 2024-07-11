@@ -7,6 +7,6 @@ import { Post } from '@/modules/post/post.entity';
 export class Photo extends BaseEntity {
   @Column()
   url: string;
-  @ManyToOne(() => Post, (post) => post.photos)
+  @ManyToOne(() => Post, (post) => post.photos, { onDelete: 'CASCADE' })
   post: Post;
 }

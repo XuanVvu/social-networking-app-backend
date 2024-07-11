@@ -98,6 +98,7 @@ export class PostService {
           where: { id: id },
           relations: ['user', 'comments', 'postLikes', 'photos'],
         });
+        console.log(post);
 
         if (!post) {
           throw new NotFoundException(`Post with ID ${id} not found`);
@@ -120,19 +121,21 @@ export class PostService {
     );
   }
 
-  async deletePost(id: number) {
+  async deletePost(id: number, currentUser: User): Promise<void> {
     return this.transactionService.executeInTransaction(
       async (entityManager) => {
-        const existPost = await entityManager.findOne(Post, {
-          where: { id: id },
-          relations: ['user', 'comments', 'postLikes', 'photos'],
-        });
-
-        if (!existPost) {
-          throw new HttpException('User does not exist', 404);
+        try {
+          const existPost = await entityManager.findOne(Post, {
+            where: { id: id },
+            relations: ['user', 'comments', 'postLikes', 'photos'],
+          });
+          if (!existPost) {
+            throw new HttpException('User does not exist', 404);
+          }
+          await entityManager.remove(existPost);
+        } catch (error) {
+          console.log(error);
         }
-
-        return await entityManager.remove(existPost);
       },
     );
   }

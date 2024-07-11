@@ -6,6 +6,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -80,6 +81,14 @@ export class PostController {
     updatePostDto.photosToAdd = photosToAdd;
     // Add uploaded photos to DTO
     updatePostDto.photosToAdd = photosToAdd;
-    return this.postService.updatePost(id, updatePostDto, currentUser);
+    return await this.postService.updatePost(id, updatePostDto, currentUser);
+  }
+
+  @Delete('/delete/:id')
+  async deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return await this.postService.deletePost(id, currentUser);
   }
 }

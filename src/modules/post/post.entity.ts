@@ -18,12 +18,12 @@ export class Post extends BaseEntity {
   @ManyToOne(() => User, (user) => user.posts)
   user: User;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, { cascade: true })
   comments: Comment[];
 
-  @OneToMany(() => PostLike, (postLike) => postLike.post)
+  @OneToMany(() => PostLike, (postLike) => postLike.post, { cascade: true })
   postLikes: PostLike[];
 
-  @OneToMany(() => Photo, (photo) => photo.post)
+  @OneToMany(() => Photo, (photo) => photo.post, { cascade: true })
   photos: Photo[];
 }
