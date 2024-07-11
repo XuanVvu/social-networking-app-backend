@@ -7,6 +7,6 @@ export class PostLike extends BaseEntity {
   @ManyToOne(() => User, (user) => user.postLike)
   user: User;
 
-  @ManyToOne(() => Post, (post) => post.postLikes)
+  @ManyToOne(() => Post, (post) => post.postLikes, { onDelete: 'CASCADE' })
   post: Post;
 }

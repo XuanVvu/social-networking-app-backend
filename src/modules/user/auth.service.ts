@@ -46,10 +46,16 @@ export class AuthService {
     };
   }
 
-  async login(requestBody: LoginDto) {
+  async login(
+    requestBody: LoginDto,
+  ): Promise<{ success: boolean; data?: any; message?: string }> {
     const userByEmail = await this.userService.findByEmail(requestBody.email);
     if (!userByEmail) {
-      throw new BadRequestException('Invalid email');
+      console.log(1);
+
+      return {
+        success: false,
+      };
     }
 
     // check password
@@ -59,7 +65,11 @@ export class AuthService {
       userByEmail.password,
     );
     if (!isMathchPassword) {
-      throw new BadRequestException('Invalid email');
+      console.log(2);
+
+      return {
+        success: false,
+      };
     }
     const payload = {
       id: userByEmail.id,
@@ -72,8 +82,10 @@ export class AuthService {
       secret: `${process.env.JWT_SECRET}`,
     });
     return {
-      msg: 'User has been created',
-      access_token,
+      success: true,
+      data: {
+        access_token,
+      },
     };
   }
 }
