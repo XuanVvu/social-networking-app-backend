@@ -25,7 +25,6 @@ import { LoginDto } from './dto/LoginUser.dto';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { HttpExceptionFilter } from '@/shared/helpers/HttpExceptionFilter';
 
 @Controller('api/v1/users')
 // @UseFilters(HttpExceptionFilter)
