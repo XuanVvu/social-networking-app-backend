@@ -25,7 +25,6 @@ import { LoginDto } from './dto/LoginUser.dto';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { HttpExceptionFilter } from '@/shared/helpers/HttpExceptionFilter';
 
 @Controller('api/v1/users')
 // @UseFilters(HttpExceptionFilter)
@@ -39,6 +38,8 @@ export class UserController {
   @UseGuards(new RoleGuard(['admin']))
   @UseGuards(AuthGuard)
   getAllUsers() {
+    console.log(12);
+
     return this.userService.findAllUsers();
   }
 
