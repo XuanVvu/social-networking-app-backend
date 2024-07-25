@@ -1,24 +1,22 @@
-version: '3.8'
+version: '3'
 services:
-  social-networking-app:
+  app:
     build: .
     ports:
-      - '3001:3000'
+      - '3000:3000'
+    depends_on:
+      - db
     environment:
       - DATABASE_HOST=mysql-db
       - DATABASE_USER=root
       - DATABASE_PASSWORD=Xuanvu0307@
       - DATABASE_NAME=posts
       - DATABASE_PORT=3306
-    depends_on:
-      - mysql-db
-  mysql-db:
-    image: mysql/mysql-server:8.0
+  db:
+    image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=Xuanvu0307@
       - MYSQL_DATABASE=posts
       - MYSQL_ROOT_HOST=%
     volumes:
-      - mysql-data:/var/lib/mysql
-volumes:
-  mysql-data: {}
+      - ./mysql-data:/var/lib/mysql
