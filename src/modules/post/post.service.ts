@@ -98,10 +98,24 @@ export class PostService {
           where: { id: id },
           relations: ['user', 'comments', 'postLikes', 'photos'],
         });
-        console.log(post);
-
         if (!post) {
           throw new NotFoundException(`Post with ID ${id} not found`);
+        }
+
+        return post;
+      },
+    );
+  }
+
+  async findPostByUserId(userId: number): Promise<Post[]> {
+    return this.transactionService.executeInTransaction(
+      async (entityManager) => {
+        const post = await entityManager.find(Post, {
+          where: { user: { id: userId } },
+          relations: ['user', 'comments', 'postLikes', 'photos'],
+        });
+        if (!post) {
+          throw new NotFoundException(`Post with ID ${userId} not found`);
         }
 
         return post;
