@@ -10,9 +10,12 @@ import { Comment } from '@/modules/comment/comment.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { PhotoService } from '@/modules/photo/photo.service';
 import { Photo } from '@/modules/photo/photo.entity';
+import { Friend } from '@/modules/friend/friend.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post, User, Comment, PostLike, Photo])],
+  imports: [
+    TypeOrmModule.forFeature([Post, User, Comment, PostLike, Photo, Friend]),
+  ],
   providers: [PostService, UserService, PhotoService, TransactionService],
   controllers: [PostController],
 })

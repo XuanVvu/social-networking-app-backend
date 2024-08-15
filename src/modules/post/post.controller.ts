@@ -39,11 +39,16 @@ export class PostController {
     return this.postService.findPostById(id);
   }
 
+  @Get('postByUserId/:userId')
+  async getPostByUserId(@Param('userId', ParseIntPipe) userId: number) {
+    return this.postService.findPostByUserId(userId);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(
     FilesInterceptor('photos', 10, {
-      storage: storageConfig('post'),
+      storage: storageConfig('posts'),
       fileFilter: imageFileFilter,
     }),
   )
@@ -53,6 +58,8 @@ export class PostController {
     @CurrentUser() currentUser: User,
     @UploadedFiles() photos: Array<Express.Multer.File>,
   ) {
+    console.log(currentUser);
+
     if (req.fileValidationError) {
       throw new BadRequestException(req.fileValidationError);
     }

@@ -6,6 +6,7 @@ import { Comment } from '@/modules/comment/comment.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { Post } from '@/modules/post/post.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
+import { Friend } from '@/modules/friend/friend.entity';
 
 enum ROLES {
   ADMIN = 'ADMIN',
@@ -45,4 +46,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => PostLike, (postLike) => postLike.user)
   postLike: PostLike;
+
+  @OneToMany(() => Friend, (friend) => friend.requester)
+  friendsRequested: Friend[];
+
+  @OneToMany(() => Friend, (friend) => friend.recipient)
+  friendsReceived: Friend[];
 }
