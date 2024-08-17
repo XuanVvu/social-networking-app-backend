@@ -8,6 +8,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { UserModule } from './modules/user/user.module';
 import { PostModule } from '@/modules/post/post.module';
 import { PostLikeModule } from '@/modules/post-like/post-like.module';
+import { SharePostModule } from '@/modules/share-post/share-post.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { PostLikeModule } from '@/modules/post-like/post-like.module';
     ProductsModule,
     PostModule,
     PostLikeModule,
-    FriendModule
+    FriendModule,
+    SharePostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

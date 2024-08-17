@@ -7,6 +7,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { Post } from '@/modules/post/post.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { Friend } from '@/modules/friend/friend.entity';
+import { SharedPost } from '@/modules/share-post/share-post.entity';
 
 enum ROLES {
   ADMIN = 'ADMIN',
@@ -38,7 +39,7 @@ export class User extends BaseEntity {
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.author)
   comments: Comment[];
 
   @OneToMany(() => Post, (post) => post.user)
@@ -52,4 +53,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Friend, (friend) => friend.recipient)
   friendsReceived: Friend[];
+
+  @OneToMany(() => SharedPost, (sharedPost) => sharedPost.sharedBy)
+  sharedPosts: SharedPost[];
 }
