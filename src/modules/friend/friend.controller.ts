@@ -24,20 +24,31 @@ export class FriendController {
     @CurrentUser() currentUser: User,
     @Param('recipientId') recipientId: number,
   ) {
-    console.log(currentUser);
-    // console.log(req);
-
     return this.friendService.sendFriendRequest(currentUser.id, recipientId);
   }
 
   @Post('accept/:friendRequestId')
-  acceptFriendRequest(@Param('friendRequestId') friendRequestId: number) {
-    return this.friendService.acceptFriendRequest(friendRequestId);
+  @UseGuards(AuthGuard)
+  acceptFriendRequest(
+    @Param('friendRequestId') friendRequestId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.friendService.acceptFriendRequest(
+      friendRequestId,
+      currentUser.id,
+    );
   }
 
-  @Post('reject/:friendRequestId')
-  rejectFriendRequest(@Param('friendRequestId') friendRequestId: number) {
-    return this.friendService.rejectFriendRequest(friendRequestId);
+  @Delete('reject/:friendRequestId')
+  @UseGuards(AuthGuard)
+  rejectFriendRequest(
+    @Param('friendRequestId') friendRequestId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.friendService.rejectFriendRequest(
+      friendRequestId,
+      currentUser.id,
+    );
   }
 
   @Get()
@@ -51,12 +62,22 @@ export class FriendController {
   }
 
   @Delete('requests/cancel/:recipientId')
-  cancelFriendRequest(@Req() req, @Param('recipientId') recipientId: number) {
-    return this.friendService.cancelFriendRequest(req.user.id, recipientId);
+  @UseGuards(AuthGuard)
+  cancelFriendRequest(
+    @Req() req,
+    @Param('recipientId') recipientId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.friendService.cancelFriendRequest(currentUser.id, recipientId);
   }
 
   @Delete(':friendId')
-  removeFriend(@Req() req, @Param('friendId') friendId: number) {
-    return this.friendService.removeFriend(req.user.id, friendId);
+  @UseGuards(AuthGuard)
+  removeFriend(
+    @Req() req,
+    @Param('friendId') friendId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.friendService.removeFriend(currentUser.id, friendId);
   }
 }

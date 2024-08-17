@@ -32,22 +32,37 @@ export class FriendService {
     return this.friendRepository.save(newFriendRequest);
   }
 
-  async acceptFriendRequest(friendRequestId: number) {
-    const friendRequest = await this.friendRepository.findOneBy({
-      requester: {
-        id: friendRequestId,
+  async acceptFriendRequest(friendRequestId: number, currentUserId: number) {
+    const friendRequest = await this.friendRepository.findOne({
+      where: {
+        requester: {
+          id: friendRequestId,
+        },
+        recipient: {
+          id: currentUserId,
+        },
+        status: 'pending',
       },
+      relations: ['requester', 'recipient'],
     });
     friendRequest.status = 'accepted';
     return this.friendRepository.save(friendRequest);
   }
 
-  async rejectFriendRequest(friendRequestId: number) {
-    const friendRequest = await this.friendRepository.findOneBy({
-      id: friendRequestId,
+  async rejectFriendRequest(friendRequestId: number, currentUserId: number) {
+    const friendRequest = await this.friendRepository.findOne({
+      where: {
+        requester: {
+          id: friendRequestId,
+        },
+        recipient: {
+          id: currentUserId,
+        },
+        status: 'pending',
+      },
+      relations: ['requester', 'recipient'],
     });
-    friendRequest.status = 'rejected';
-    return this.friendRepository.save(friendRequest);
+    return this.friendRepository.remove(friendRequest);
   }
 
   async getFriendships(
@@ -57,7 +72,11 @@ export class FriendService {
     switch (status) {
       case 'pending':
         return this.friendRepository.find({
-          where: { recipient: { id: userId }, status: 'pending' },
+          where: {
+            recipient: { id: userId },
+            status: 'pending',
+          },
+          relations: ['requester', 'recipient'],
         });
       case 'accepted':
         return this.friendRepository.find({
