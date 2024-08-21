@@ -58,8 +58,6 @@ export class PostController {
     @CurrentUser() currentUser: User,
     @UploadedFiles() photos: Array<Express.Multer.File>,
   ) {
-    console.log(currentUser);
-
     if (req.fileValidationError) {
       throw new BadRequestException(req.fileValidationError);
     }
@@ -74,6 +72,13 @@ export class PostController {
   }
 
   @Put('/update/:id')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FilesInterceptor('photos', 10, {
+      storage: storageConfig('posts'),
+      fileFilter: imageFileFilter,
+    }),
+  )
   async updatePost(
     @Req() req: any,
     @Param('id', ParseIntPipe) id: number,
@@ -84,9 +89,8 @@ export class PostController {
     if (req.fileValidationError) {
       throw new BadRequestException(req.fileValidationError);
     }
+    console.log(photosToAdd);
 
-    updatePostDto.photosToAdd = photosToAdd;
-    // Add uploaded photos to DTO
     updatePostDto.photosToAdd = photosToAdd;
     return await this.postService.updatePost(id, updatePostDto, currentUser);
   }

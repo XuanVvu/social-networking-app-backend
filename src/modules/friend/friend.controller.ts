@@ -80,4 +80,10 @@ export class FriendController {
   ) {
     return this.friendService.removeFriend(currentUser.id, friendId);
   }
+
+  @Get('non-friends')
+  @UseGuards(AuthGuard)
+  async getNonFriends(@Req() req, @CurrentUser() currentUser: User) {
+    return this.friendService.getNonFriendsAndPendingRequests(currentUser.id);
+  }
 }
