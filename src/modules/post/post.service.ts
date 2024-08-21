@@ -36,10 +36,7 @@ export class PostService {
           }),
         );
 
-        // Assign saved photos to the post
         savedPost.photos = savedPhotos;
-
-        // Save the post with the associated photos
         return await entityManager.save(savedPost);
       },
     );
@@ -58,7 +55,6 @@ export class PostService {
           post.content = posUpdate.content;
         }
 
-        // Delete photos if specified
         if (
           posUpdate.photoIdsToDelete &&
           posUpdate.photoIdsToDelete.length > 0
@@ -71,7 +67,7 @@ export class PostService {
           );
           await entityManager.remove(photosToDelete);
         }
-        // Add new photos if provided
+
         if (posUpdate.photosToAdd && posUpdate.photosToAdd.length > 0) {
           const newPhotos = posUpdate.photosToAdd.map((photo) =>
             this.photoRepository.create({
@@ -113,6 +109,9 @@ export class PostService {
         const post = await entityManager.find(Post, {
           where: { user: { id: userId } },
           relations: ['user', 'comments', 'postLikes', 'photos'],
+          order: {
+            createdAt: 'DESC',
+          },
         });
         if (!post) {
           throw new NotFoundException(`Post with ID ${userId} not found`);

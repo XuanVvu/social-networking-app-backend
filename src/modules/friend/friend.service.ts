@@ -134,4 +134,26 @@ export class FriendService {
 
     await this.friendRepository.remove(friendship);
   }
+
+  async getNonFriendsAndPendingRequests(userId: number) {
+    const allUsers = await this.userRepository.find();
+
+    const friendships = await this.friendRepository.find({
+      where: [{ requester: { id: userId } }, { recipient: { id: userId } }],
+      relations: ['requester', 'recipient'],
+    });
+
+    const nonFriends = allUsers.filter((user) => {
+      return !friendships.some((friendship) => {
+        return (
+          friendship.requester.id === user.id ||
+          friendship.recipient.id === user.id ||
+          friendship.requester.id === userId ||
+          friendship.recipient.id === userId
+        );
+      });
+    });
+
+    return nonFriends;
+  }
 }

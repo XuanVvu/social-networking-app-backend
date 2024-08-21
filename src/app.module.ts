@@ -9,6 +9,7 @@ import { UserModule } from './modules/user/user.module';
 import { PostModule } from '@/modules/post/post.module';
 import { PostLikeModule } from '@/modules/post-like/post-like.module';
 import { SharePostModule } from '@/modules/share-post/share-post.module';
+import { ChatModule } from '@/modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SharePostModule } from '@/modules/share-post/share-post.module';
     PostLikeModule,
     FriendModule,
     SharePostModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
