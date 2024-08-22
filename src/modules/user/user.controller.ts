@@ -38,8 +38,6 @@ export class UserController {
   @UseGuards(new RoleGuard(['admin']))
   @UseGuards(AuthGuard)
   getAllUsers() {
-    console.log(12);
-
     return this.userService.findAllUsers();
   }
 
@@ -62,8 +60,6 @@ export class UserController {
   @Post('/login')
   async loginUser(@Body() requestBody: LoginDto) {
     const result = (await this.authService.login(requestBody)) as any;
-    console.log(result);
-
     if (!result.success) {
       // Xử lý lỗi đăng nhập (ví dụ: sai mật khẩu)
       return {

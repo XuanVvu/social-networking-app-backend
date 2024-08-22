@@ -51,8 +51,6 @@ export class AuthService {
   ): Promise<{ success: boolean; data?: any; message?: string }> {
     const userByEmail = await this.userService.findByEmail(requestBody.email);
     if (!userByEmail) {
-      console.log(1);
-
       return {
         success: false,
       };
@@ -65,8 +63,6 @@ export class AuthService {
       userByEmail.password,
     );
     if (!isMathchPassword) {
-      console.log(2);
-
       return {
         success: false,
       };

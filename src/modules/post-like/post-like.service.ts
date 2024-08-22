@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { async } from 'rxjs';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,45 +17,69 @@ export class PostLikeService {
     private likeRepository: Repository<PostLike>,
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
   ) {}
 
-  async likePost(postId: number, userId: number): Promise<PostLike> {
-    const post = await this.postRepository.findOneBy({ id: postId });
+  async getLikeStatus(postId: number, user: User): Promise<boolean> {
+    const post = await this.postRepository.findOne({ where: { id: postId } });
     if (!post) {
       throw new NotFoundException('Post not found');
     }
 
     const existingLike = await this.likeRepository.findOne({
-      where: { post: { id: postId }, user: { id: userId } },
+      where: { post: { id: postId }, user: { id: user.id } },
     });
 
-    if (existingLike) {
-      throw new BadRequestException('You have already liked this post');
-    }
-
-    const user = await this.userRepository.findOneBy({ id: userId });
-    const newLike = this.likeRepository.create({ post, user });
-    return this.likeRepository.save(newLike);
+    return !!existingLike;
   }
 
-  async unlikePost(postId: number, userId: number): Promise<void> {
-    const like = await this.likeRepository.findOne({
-      where: { post: { id: postId }, user: { id: userId } },
+  async getLikedPosts(user: User): Promise<Post[]> {
+    const likes = await this.likeRepository.find({
+      where: { user: { id: user.id } },
+      relations: ['post'],
     });
 
-    if (!like) {
-      throw new NotFoundException('Like not found');
-    }
+    return likes.map((like) => like.post);
+  }
 
-    await this.likeRepository.remove(like);
+  async updateLikeStatus(
+    postId: number,
+    user: User,
+    liked: boolean,
+  ): Promise<void> {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+    });
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    if (liked) {
+      const existingLike = await this.likeRepository.findOne({
+        where: { post: { id: postId }, user: { id: user?.id } },
+      });
+
+      if (existingLike) {
+        throw new BadRequestException('You have already liked this post');
+      }
+
+      const newLike = this.likeRepository.create({ post, user });
+      await this.likeRepository.save(newLike);
+    } else {
+      const like = await this.likeRepository.findOne({
+        where: { post: { id: postId }, user: { id: user?.id } },
+      });
+
+      if (!like) {
+        throw new NotFoundException('Like not found');
+      }
+
+      await this.likeRepository.remove(like);
+    }
   }
 
   async getLikesByPost(postId: number): Promise<User[]> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['likes', 'likes.user'],
+      relations: ['postLikes', 'postLikes.user'],
     });
 
     if (!post) {
@@ -67,7 +92,7 @@ export class PostLikeService {
   async getLikeCount(postId: number): Promise<number> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['likes'],
+      relations: ['postLikes'],
     });
 
     if (!post) {
