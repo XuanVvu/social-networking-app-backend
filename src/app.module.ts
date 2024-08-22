@@ -10,6 +10,7 @@ import { PostModule } from '@/modules/post/post.module';
 import { PostLikeModule } from '@/modules/post-like/post-like.module';
 import { SharePostModule } from '@/modules/share-post/share-post.module';
 import { ChatModule } from '@/modules/chat/chat.module';
+import { CommentModule } from '@/modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ChatModule } from '@/modules/chat/chat.module';
     FriendModule,
     SharePostModule,
     ChatModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

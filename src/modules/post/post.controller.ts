@@ -39,7 +39,7 @@ export class PostController {
     return this.postService.findPostById(id);
   }
 
-  @Get('postByUserId/:userId')
+  @Get('/postByUserId/:userId')
   async getPostByUserId(@Param('userId', ParseIntPipe) userId: number) {
     return this.postService.findPostByUserId(userId);
   }
@@ -89,8 +89,6 @@ export class PostController {
     if (req.fileValidationError) {
       throw new BadRequestException(req.fileValidationError);
     }
-    console.log(photosToAdd);
-
     updatePostDto.photosToAdd = photosToAdd;
     return await this.postService.updatePost(id, updatePostDto, currentUser);
   }

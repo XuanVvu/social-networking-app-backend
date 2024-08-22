@@ -32,6 +32,7 @@ export class CommentService {
       content,
       author: user,
       post,
+      createdAt: new Date(),
     });
 
     return this.commentRepository.save(comment);
@@ -56,20 +57,21 @@ export class CommentService {
     }
 
     comment.content = content;
+    comment.updatedAt = new Date();
     return this.commentRepository.save(comment);
   }
 
-  async deleteComment(id: number, userId: number): Promise<void> {
+  async deleteComment(id: number, user: User): Promise<void> {
     const comment = await this.commentRepository.findOne({
       where: { id },
-      relations: ['author', 'post', 'post.author'],
+      relations: ['author', 'post', 'post.user'],
     });
 
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }
 
-    if (comment.author.id !== userId && comment.post.user.id !== userId) {
+    if (comment.author.id !== user.id && comment.post.user.id !== user.id) {
       throw new ForbiddenException(
         'You can only delete your own comments or comments on your posts',
       );
