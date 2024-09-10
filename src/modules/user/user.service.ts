@@ -70,6 +70,8 @@ export class UserService {
 
     if (updateUserDto.avatar && updateUserDto.avatar.length > 0) {
       user.avatar = updateUserDto.avatar[0].filename;
+    } else {
+      user.avatar = currentUser.avatar;
     }
 
     return await this.userRepository.save(user);
