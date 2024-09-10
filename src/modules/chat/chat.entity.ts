@@ -1,25 +1,16 @@
 import { BaseEntity } from '@/common/base.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-} from 'typeorm';
+import { Message } from '@/modules/message/message.entity';
+import { User } from '@/modules/user/user.entity';
+import { Entity, OneToMany, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Message extends BaseEntity {
-  @Column()
-  senderId: number;
+export class Chat extends BaseEntity {
+  @ManyToOne(() => User, (user) => user.chatsAsUser1)
+  user1: User;
 
-  @Column()
-  receiverId: number;
+  @ManyToOne(() => User, (user) => user.chatsAsUser2)
+  user2: User;
 
-  @Column('text')
-  content: string;
-
-  @CreateDateColumn()
-  timestamp: Date;
-
-  @Column({ default: false })
-  isRead: boolean;
+  @OneToMany(() => Message, (message) => message.chat)
+  messages: Message[];
 }

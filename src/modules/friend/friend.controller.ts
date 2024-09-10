@@ -20,7 +20,6 @@ export class FriendController {
   @Post('request/:recipientId')
   @UseGuards(AuthGuard)
   sendFriendRequest(
-    @Req() req,
     @CurrentUser() currentUser: User,
     @Param('recipientId') recipientId: number,
   ) {
@@ -54,17 +53,15 @@ export class FriendController {
   @Get()
   @UseGuards(AuthGuard)
   getFriends(
-    @Req() req,
     @CurrentUser() currentUser: User,
     @Query('status') status: 'pending' | 'accepted' | 'sent' = 'accepted',
   ) {
     return this.friendService.getFriendships(currentUser.id, status);
   }
 
-  @Delete('requests/cancel/:recipientId')
+  @Delete('/cancel/:recipientId')
   @UseGuards(AuthGuard)
   cancelFriendRequest(
-    @Req() req,
     @Param('recipientId') recipientId: number,
     @CurrentUser() currentUser: User,
   ) {
@@ -74,7 +71,6 @@ export class FriendController {
   @Delete(':friendId')
   @UseGuards(AuthGuard)
   removeFriend(
-    @Req() req,
     @Param('friendId') friendId: number,
     @CurrentUser() currentUser: User,
   ) {
@@ -83,7 +79,16 @@ export class FriendController {
 
   @Get('non-friends')
   @UseGuards(AuthGuard)
-  async getNonFriends(@Req() req, @CurrentUser() currentUser: User) {
+  async getNonFriends(@CurrentUser() currentUser: User) {
     return this.friendService.getNonFriendsAndPendingRequests(currentUser.id);
+  }
+
+  @Get('status/:userId')
+  @UseGuards(AuthGuard)
+  async getFriendshipStatus(
+    @Param('userId') userId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.friendService.getFriendshipStatus(currentUser.id, userId);
   }
 }

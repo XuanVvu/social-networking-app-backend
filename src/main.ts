@@ -12,7 +12,12 @@ async function bootstrap(): Promise<void> {
   app.use('/uploads', serveStatic(join(__dirname, '..', 'uploads')));
   app.useGlobalPipes(new ValidationPipe());
   // app.useGlobalPipes(new CustomValidationPipe());
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:5173', // Port frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Nếu bạn cần gửi cookie hoặc thông tin xác thực khác
+  });
+
   app.useStaticAssets(join(__dirname, '../uploads'));
   await app.listen(PORT, () => {
     console.log(`App start with port ${PORT}`);

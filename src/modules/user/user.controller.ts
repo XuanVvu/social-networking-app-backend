@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -10,23 +11,30 @@ import {
   Put,
   Req,
   UploadedFile,
+  UploadedFiles,
   UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { CurrentUser } from '@/shared/decorator/currentUser.decorator';
 import { AuthGuard } from '@/shared/guards/auth.guard';
 import { RoleGuard } from '@/shared/guards/role.guard';
-import { storageConfig } from '@/shared/helpers/uploadFileConfig.helper';
+import {
+  imageFileFilter,
+  storageConfig,
+} from '@/shared/helpers/uploadFileConfig.helper';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/LoginUser.dto';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import { UpdateUserDto } from '@/modules/user/dto/updateUser.dto';
+import { ChangePasswordDto } from '@/modules/user/dto/ChangePassword.dto';
 
 @Controller('api/v1/users')
+@UseInterceptors(ClassSerializerInterceptor)
 // @UseFilters(HttpExceptionFilter)
 export class UserController {
   constructor(
@@ -35,8 +43,6 @@ export class UserController {
   ) {}
 
   @Get()
-  @UseGuards(new RoleGuard(['admin']))
-  @UseGuards(AuthGuard)
   getAllUsers() {
     return this.userService.findAllUsers();
   }
@@ -61,7 +67,6 @@ export class UserController {
   async loginUser(@Body() requestBody: LoginDto) {
     const result = (await this.authService.login(requestBody)) as any;
     if (!result.success) {
-      // Xử lý lỗi đăng nhập (ví dụ: sai mật khẩu)
       return {
         success: false,
         message: 'Thông tin đăng nhập không chính xác',
@@ -74,19 +79,42 @@ export class UserController {
     };
   }
 
-  @Put('/update/:id')
-  @UseGuards(AuthGuard)
-  updateUser(
-    @Param('id', ParseIntPipe) id: number,
-    @CurrentUser() currentUser: User,
-    @Body() updateUser: User,
-  ) {
-    return this.userService.updateUser(id, updateUser, currentUser);
-  }
+  // @Put('/update/:id')
+  // @UseGuards(AuthGuard)
+  // updateUser(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @CurrentUser() currentUser: User,
+  //   @Body() updateUser: User,
+  // ) {
+  //   return this.userService.updateUser(id, updateUser, currentUser);
+  // }
 
   @Delete('/delete/:id')
   deleteUser(@Param('id', ParseIntPipe) id: number) {
     return this.userService.deleteUser(id);
+  }
+
+  @Put('/update/:id')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FilesInterceptor('avatar', 1, {
+      storage: storageConfig('avatars'),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async updateUser(
+    @Req() req: any,
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFiles() avatar: Array<Express.Multer.File>,
+    @CurrentUser() currentUser: User,
+  ) {
+    if (req.fileValidationError) {
+      throw new BadRequestException(req.fileValidationError);
+    }
+
+    updateUserDto.avatar = avatar;
+    return await this.userService.updateUser(id, updateUserDto, currentUser);
   }
 
   @Post('/upload-avatar')
@@ -125,5 +153,14 @@ export class UserController {
       currentUser,
       file.destination + '/' + file.filename,
     );
+  }
+
+  @Put('change-password')
+  @UseGuards(AuthGuard)
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @CurrentUser() user: User,
+  ) {
+    return await this.userService.changePassword(user, changePasswordDto);
   }
 }

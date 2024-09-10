@@ -3,7 +3,7 @@ import { User } from '@/modules/user/user.entity';
 import { Post } from '@/modules/post/post.entity';
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Photo } from '@/modules/photo/photo.entity';
 import { TransactionService } from '@/shared/services/transaction.service';
 import { Permission } from '@/shared/helpers/checkPermission.helper';
@@ -151,5 +151,12 @@ export class PostService {
         }
       },
     );
+  }
+
+  async searchPosts(query: string) {
+    return this.postRepository.find({
+      where: { content: Like(`%${query}%`) },
+      relations: ['user', 'comments', 'postLikes', 'photos'],
+    });
   }
 }

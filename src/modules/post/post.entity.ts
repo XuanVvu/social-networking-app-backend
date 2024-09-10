@@ -11,6 +11,7 @@ import { User } from '@/modules/user/user.entity';
 import { Comment } from '@/modules/comment/comment.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { SharedPost } from '@/modules/share-post/share-post.entity';
+import { SavedPost } from '@/modules/saved-post/saved-post.entity';
 @Entity()
 export class Post extends BaseEntity {
   @Column()
@@ -30,4 +31,7 @@ export class Post extends BaseEntity {
 
   @OneToMany(() => SharedPost, (sharedPost) => sharedPost.originalPost)
   shares: SharedPost[];
+
+  @OneToMany(() => SavedPost, (savedPost) => savedPost.post)
+  savedBy: SavedPost[];
 }
