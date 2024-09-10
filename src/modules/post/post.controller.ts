@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -32,6 +33,11 @@ export class PostController {
   @Get('')
   async getAllPosts() {
     return this.postService.getAllPosts();
+  }
+
+  @Get('/search')
+  searchPosts(@Query('query') query: string) {
+    return this.postService.searchPosts(query);
   }
 
   @Get('/:id')

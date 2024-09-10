@@ -137,6 +137,7 @@ export class FriendService {
 
   async getNonFriendsAndPendingRequests(userId: number) {
     const allUsers = await this.userRepository.find();
+    // console.log(allUsers);
 
     const friendships = await this.friendRepository.find({
       where: [{ requester: { id: userId } }, { recipient: { id: userId } }],
@@ -144,16 +145,62 @@ export class FriendService {
     });
 
     const nonFriends = allUsers.filter((user) => {
-      return !friendships.some((friendship) => {
-        return (
-          friendship.requester.id === user.id ||
-          friendship.recipient.id === user.id ||
-          friendship.requester.id === userId ||
-          friendship.recipient.id === userId
-        );
-      });
+      if (user.id === userId) return false;
+
+      return !friendships.some(
+        (friendship) =>
+          (friendship.requester.id === user.id &&
+            friendship.recipient.id === userId) ||
+          (friendship.recipient?.id === user.id &&
+            friendship.requester.id === userId),
+      );
     });
 
     return nonFriends;
+  }
+
+  async getFriendshipStatus(currentUserId: number, userId: number) {
+    const friendship = await this.friendRepository.findOne({
+      where: [
+        {
+          requester: { id: currentUserId },
+          recipient: { id: userId },
+          status: 'accepted',
+        },
+        {
+          requester: { id: userId },
+          recipient: { id: currentUserId },
+          status: 'accepted',
+        },
+      ],
+      relations: ['requester', 'recipient'],
+    });
+
+    if (friendship) {
+      return { status: 'friends' };
+    }
+    const pendingRequest = await this.friendRepository.findOne({
+      where: [
+        {
+          requester: { id: currentUserId },
+          recipient: { id: userId },
+          status: 'pending',
+        },
+        {
+          requester: { id: userId },
+          recipient: { id: currentUserId },
+          status: 'pending',
+        },
+      ],
+      relations: ['requester', 'recipient'],
+    });
+    if (pendingRequest) {
+      if (pendingRequest.requester?.id === currentUserId) {
+        return { status: 'sent_request' };
+      } else {
+        return { status: 'pending_request' };
+      }
+    }
+    return { status: 'not_friends' };
   }
 }

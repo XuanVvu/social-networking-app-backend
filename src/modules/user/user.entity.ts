@@ -3,17 +3,25 @@ import { BaseEntity } from '@/common/base.entity';
 import { Product } from '@/modules/products/products.entity';
 import { Comment } from '@/modules/comment/comment.entity';
 
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToMany } from 'typeorm';
 import { Post } from '@/modules/post/post.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { Friend } from '@/modules/friend/friend.entity';
 import { SharedPost } from '@/modules/share-post/share-post.entity';
 import { Notification } from '@/modules/notification/notification.entity';
+import { SavedPost } from '@/modules/saved-post/saved-post.entity';
+import { Chat } from '@/modules/chat/chat.entity';
+import { Message } from '@/modules/message/message.entity';
 
 enum ROLES {
   ADMIN = 'ADMIN',
   MOD = 'MOD',
   USER = 'USER',
+}
+
+enum Gender {
+  Male = 1,
+  Female = 2,
 }
 @Entity()
 export class User extends BaseEntity {
@@ -29,6 +37,16 @@ export class User extends BaseEntity {
   @Exclude()
   @Column()
   password: string;
+
+  @Column('text')
+  description: string;
+
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    default: Gender.Male,
+  })
+  gender: Gender;
 
   @Column({ default: null })
   avatar: string;
@@ -60,4 +78,16 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Notification, (notification) => notification.recipient)
   notifications: Notification[];
+
+  @OneToMany(() => SavedPost, (savedPost) => savedPost.user)
+  savedPosts: SavedPost[];
+
+  @OneToMany(() => Chat, (chat) => chat.user1)
+  chatsAsUser1: Chat[];
+
+  @OneToMany(() => Chat, (chat) => chat.user2)
+  chatsAsUser2: Chat[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messages: Message[];
 }

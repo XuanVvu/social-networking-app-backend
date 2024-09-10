@@ -11,6 +11,8 @@ import { PostLikeModule } from '@/modules/post-like/post-like.module';
 import { SharePostModule } from '@/modules/share-post/share-post.module';
 import { ChatModule } from '@/modules/chat/chat.module';
 import { CommentModule } from '@/modules/comment/comment.module';
+import { SavedPostModule } from '@/modules/saved-post/saved-post.module';
+import { MessageModule } from '@/modules/message/message.module';
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { CommentModule } from '@/modules/comment/comment.module';
         database: 'posts',
         entities: ['dist/**/**/*.entity{.js, .ts}'],
         migrations: ['dist/database/migrations/*{.js, .ts}'],
+        synchronize: true,
       }),
     }),
     UserModule,
@@ -40,6 +43,8 @@ import { CommentModule } from '@/modules/comment/comment.module';
     SharePostModule,
     ChatModule,
     CommentModule,
+    SavedPostModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
