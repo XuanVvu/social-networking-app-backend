@@ -55,7 +55,13 @@ export class SavedPostService {
   async getSavedPosts(userId: number): Promise<SavedPost[]> {
     return this.savedPostRepository.find({
       where: { user: { id: userId } },
-      relations: ['post', 'post.photos', 'post.comments', 'post.postLikes'],
+      relations: [
+        'post',
+        'post.photos',
+        'post.comments',
+        'post.postLikes',
+        'post.user',
+      ],
       order: {
         savedAt: 'DESC',
       },

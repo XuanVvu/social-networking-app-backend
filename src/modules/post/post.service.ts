@@ -127,6 +127,9 @@ export class PostService {
       async (entityManager) => {
         const allPosts = await entityManager.find(Post, {
           relations: ['user', 'comments', 'postLikes', 'photos'],
+          order: {
+            createdAt: 'DESC',
+          },
         });
 
         return allPosts;

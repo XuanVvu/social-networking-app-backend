@@ -1,6 +1,9 @@
 import { Chat } from '@/modules/chat/chat.entity';
 import { CreateChatDto } from '@/modules/chat/dto/createChat.dto';
-import { Controller, Post, Get, Body, Param } from '@nestjs/common';
+import { User } from '@/modules/user/user.entity';
+import { CurrentUser } from '@/shared/decorator/currentUser.decorator';
+import { AuthGuard } from '@/shared/guards/auth.guard';
+import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
 @Controller('api/v1/chats')
@@ -15,8 +18,23 @@ export class ChatController {
     );
   }
 
-  @Get(':userId')
+  @Get('/:userId')
   async getChatsForUser(@Param('userId') userId: number) {
     return this.chatService.getChatsForUser(userId);
+  }
+
+  @Get('/:userId/messages')
+  @UseGuards(AuthGuard)
+  async getChatForCurrentAndOtherUser(
+    @CurrentUser() currentUser: User,
+    @Param('userId') userId: number,
+  ) {
+    console.log(currentUser);
+    console.log(userId);
+
+    return this.chatService.getChatForCurrentAndOtherUser(
+      userId,
+      currentUser.id,
+    );
   }
 }

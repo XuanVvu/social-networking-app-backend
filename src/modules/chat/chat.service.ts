@@ -41,4 +41,16 @@ export class ChatService {
       relations: ['user1', 'user2'],
     });
   }
+
+  async getChatForCurrentAndOtherUser(
+    userId: number,
+    currentUserId: number,
+  ): Promise<Chat> {
+    return await this.chatRepository.findOne({
+      where: [
+        { user1: { id: userId }, user2: { id: currentUserId } },
+        { user1: { id: currentUserId }, user2: { id: userId } },
+      ],
+    });
+  }
 }
