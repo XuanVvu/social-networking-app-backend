@@ -29,9 +29,6 @@ export class ChatController {
     @CurrentUser() currentUser: User,
     @Param('userId') userId: number,
   ) {
-    console.log(currentUser);
-    console.log(userId);
-
     return this.chatService.getChatForCurrentAndOtherUser(
       userId,
       currentUser.id,

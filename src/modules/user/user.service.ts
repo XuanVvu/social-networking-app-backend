@@ -98,10 +98,7 @@ export class UserService {
     user: User,
     changePasswordDto: ChangePasswordDto,
   ): Promise<any> {
-    console.log(1);
-
     const { oldPassword, newPassword } = changePasswordDto;
-
     const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isOldPasswordValid) {
       return { message: 'Mật khẩu không chính xác', status: false };
