@@ -1,6 +1,7 @@
 import { User } from '@/modules/user/user.entity';
 import { CurrentUser } from '@/shared/decorator/currentUser.decorator';
 import { AuthGuard } from '@/shared/guards/auth.guard';
+import { LoggerService } from '@/shared/services/logger.service';
 import {
   Controller,
   Post,
@@ -15,7 +16,10 @@ import { FriendService } from './friend.service';
 
 @Controller('api/v1/friends')
 export class FriendController {
-  constructor(private friendService: FriendService) {}
+  constructor(
+    private friendService: FriendService,
+    private logger: LoggerService,
+  ) {}
 
   @Post('request/:recipientId')
   @UseGuards(AuthGuard)
