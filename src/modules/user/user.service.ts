@@ -1,15 +1,12 @@
 import {
-  BadRequestException,
   ForbiddenException,
   HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Permission } from '@/shared/helpers/checkPermission.helper';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/registerUser.dto';
-// import { RegisterUserDto } from './dto/registerUser.dto';
 import { User } from './user.entity';
 import { UpdateUserDto } from '@/modules/user/dto/updateUser.dto';
 import * as bcrypt from 'bcrypt';
@@ -21,6 +18,10 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  async create(requestBody: RegisterUserDto) {
+    return await this.userRepository.create(requestBody);
+  }
 
   async createUser(requestBody: RegisterUserDto) {
     const user = await this.userRepository.create(requestBody);
@@ -34,20 +35,6 @@ export class UserService {
   async findUserById(id: number) {
     return this.userRepository.findOneBy({ id });
   }
-
-  // async updateUser(id: number, user: User, currentUser: User) {
-  //   if (user.role) {
-  //     throw new BadRequestException('You cannot change role');
-  //   }
-  //   const userUpdate = await this.findUserById(id);
-  //   if (!userUpdate) {
-  //     throw new HttpException('User does not exist', 404);
-  //   }
-
-  //   Permission.check(id, currentUser);
-
-  //   return await this.userRepository.update(id, user);
-  // }
 
   async updateUser(
     id: number,
@@ -77,6 +64,10 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async update(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
+
   async deleteUser(id: number) {
     const user = await this.findUserById(id);
     if (!user) {
@@ -92,6 +83,13 @@ export class UserService {
 
   updateAvatar(currentUser: User, avatar: string) {
     return this.userRepository.update(currentUser.id, { avatar });
+  }
+
+  async saveResetToken(userId: number, resetToken: string): Promise<void> {
+    await this.userRepository.update(userId, {
+      resetToken: resetToken,
+      resetTokenExpires: new Date(Date.now() + 3600000),
+    });
   }
 
   async changePassword(
@@ -110,5 +108,15 @@ export class UserService {
     await this.userRepository.save({ ...user, password: hashedPassword });
 
     return { message: 'Mật khẩu đã được thay đổi thành công', status: true };
+  }
+
+  async saveConfirmationToken(userId: number, token: string) {
+    await this.userRepository.update(userId, {
+      confirmationToken: token,
+    });
+  }
+
+  async findByConfirmationToken(token: string): Promise<User> {
+    return this.userRepository.findOne({ where: { confirmationToken: token } });
   }
 }
