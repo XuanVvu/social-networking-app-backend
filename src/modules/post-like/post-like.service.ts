@@ -58,7 +58,7 @@ export class PostLikeService {
       });
 
       if (existingLike) {
-        throw new BadRequestException('You have already liked this post');
+        throw new BadRequestException(' ');
       }
 
       const newLike = this.likeRepository.create({ post, user });

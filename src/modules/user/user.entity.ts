@@ -3,7 +3,7 @@ import { BaseEntity } from '@/common/base.entity';
 import { Product } from '@/modules/products/products.entity';
 import { Comment } from '@/modules/comment/comment.entity';
 
-import { Entity, Column, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Post } from '@/modules/post/post.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { Friend } from '@/modules/friend/friend.entity';
@@ -54,6 +54,18 @@ export class User extends BaseEntity {
   @Column({ default: ROLES.USER })
   @Exclude()
   role: ROLES;
+
+  @Column({ nullable: true })
+  resetToken: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  resetTokenExpires: Date;
+
+  @Column({ nullable: true })
+  confirmationToken: string;
+
+  @Column({ default: false })
+  isConfirmed: boolean;
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];

@@ -12,7 +12,6 @@ import {
   Req,
   UploadedFile,
   UploadedFiles,
-  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -20,7 +19,6 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { CurrentUser } from '@/shared/decorator/currentUser.decorator';
 import { AuthGuard } from '@/shared/guards/auth.guard';
-import { RoleGuard } from '@/shared/guards/role.guard';
 import {
   imageFileFilter,
   storageConfig,
