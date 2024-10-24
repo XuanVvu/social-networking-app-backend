@@ -9,7 +9,6 @@ import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/LoginUser.dto';
 import { MailService } from '../mail/mail.service';
-import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
@@ -34,23 +33,39 @@ export class AuthService {
     requestBody.password = hashedPassword;
 
     // save to db
-    const savedUser = await this.userService.create(requestBody);
+    const newUser = await this.userService.createUser(requestBody);
     //generate jwt token
 
     const confirmationToken = this.jwtService.sign(
-      {
-        email: savedUser.email,
-      },
+      { email: newUser.email },
       { expiresIn: '1h' },
     );
+    this.userService.saveConfirmationToken(newUser.id, confirmationToken);
+    const confirmationUrl = `${process.env.APP_URL}/auth/confirm?token=${confirmationToken}`;
+    await this.mailService.sendConfirmationEmail(
+      newUser.email,
+      confirmationUrl,
+    );
+  }
+
+  async confirmEmail(
+    token: string,
+  ): Promise<{ msg: string; access_token: string }> {
+    const decoded = this.jwtService.verify(token);
+    const user = await this.userService.findByEmail(decoded.email);
+    if (!user || user.isConfirmed) {
+      throw new NotFoundException('Invalid or expired confirmation token');
+    }
+
+    await this.userService.confirmUser(user.id);
     const payload = {
-      id: savedUser.id,
-      firstName: savedUser.firstName,
-      lastName: savedUser.lastName,
-      email: savedUser.email,
-      role: savedUser.role,
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
     };
-    const access_token = this.generateResetToken(payload);
+    const access_token = await this.generateResetToken(payload);
     return {
       msg: 'User has been created',
       access_token,
@@ -116,17 +131,5 @@ export class AuthService {
     return await this.jwtService.signAsync(payload, {
       secret: `${process.env.JWT_SECRET}`,
     });
-  }
-
-  async confirmEmail(token: string): Promise<User> {
-    const user = await this.userService.findByConfirmationToken(token);
-    if (!user) {
-      throw new NotFoundException('User not found. ');
-    }
-
-    user.isConfirmed = true;
-    user.confirmationToken = null;
-    await this.userService.update(user);
-    return user;
   }
 }

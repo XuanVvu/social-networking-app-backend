@@ -28,6 +28,13 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async confirmUser(userId: number): Promise<void> {
+    await this.userRepository.update(userId, {
+      isConfirmed: true,
+      confirmationToken: null,
+    });
+  }
+
   async findAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
@@ -114,9 +121,5 @@ export class UserService {
     await this.userRepository.update(userId, {
       confirmationToken: token,
     });
-  }
-
-  async findByConfirmationToken(token: string): Promise<User> {
-    return this.userRepository.findOne({ where: { confirmationToken: token } });
   }
 }
