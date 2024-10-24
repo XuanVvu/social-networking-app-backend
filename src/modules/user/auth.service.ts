@@ -93,6 +93,13 @@ export class AuthService {
         success: false,
       };
     }
+    if (!userByEmail.isConfirmed) {
+      return {
+        success: false,
+        message: 'Please confirm your email before logging in',
+      };
+    }
+
     const payload = {
       id: userByEmail.id,
       firstName: userByEmail.firstName,
