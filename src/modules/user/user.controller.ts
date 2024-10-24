@@ -57,8 +57,11 @@ export class UserController {
   }
 
   @Post('/register')
-  registerUser(@Body() requestBody: RegisterUserDto) {
-    return this.authService.register(requestBody);
+  async registerUser(@Body() requestBody: RegisterUserDto) {
+    await this.authService.register(requestBody);
+    return {
+      message: 'Please check your email to confirm your account.',
+    };
   }
 
   @Post('/login')
