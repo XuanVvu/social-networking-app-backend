@@ -107,11 +107,13 @@ export class AuthService {
       email: userByEmail.email,
       role: userByEmail.role,
     };
-    const access_token = this.generateResetToken(payload);
+    const access_token = this.generateResetToken(payload, '15m');
+    const refresh_token = this.generateResetToken(payload, '7d');
     return {
       success: true,
       data: {
         access_token,
+        refresh_token,
       },
     };
   }
@@ -134,9 +136,10 @@ export class AuthService {
     return { message: 'Reset password link sent to email' };
   }
 
-  async generateResetToken(payload: any): Promise<string> {
+  async generateResetToken(payload: any, expiresIn?: string): Promise<string> {
     return await this.jwtService.signAsync(payload, {
       secret: `${process.env.JWT_SECRET}`,
+      expiresIn,
     });
   }
 }
