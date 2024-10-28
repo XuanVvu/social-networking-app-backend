@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@/modules/user/user.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class CommentService {
@@ -16,6 +17,7 @@ export class CommentService {
     private commentRepository: Repository<Comment>,
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    private notificationService: NotificationService,
   ) {}
 
   async createComment(
@@ -34,7 +36,13 @@ export class CommentService {
       post,
       createdAt: new Date(),
     });
-
+    const messageCommentNoti = 'Bài viết của bạn có 1 bình luận';
+    if (user.id !== post.user.id) {
+      await this.notificationService.createNotification(
+        post.user.id,
+        messageCommentNoti,
+      );
+    }
     return this.commentRepository.save(comment);
   }
 
