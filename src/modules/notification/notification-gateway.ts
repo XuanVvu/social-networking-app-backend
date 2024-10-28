@@ -1,9 +1,7 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  ConnectedSocket,
   WebSocketServer,
-  MessageBody as WsMessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { NotificationService } from './notification.service';
@@ -12,48 +10,38 @@ import { NotificationService } from './notification.service';
 export class NotificationGateway {
   @WebSocketServer()
   server: Server;
+  private activeUsers = new Map<number, string>();
 
   constructor(private notificationService: NotificationService) {}
 
-  @SubscribeMessage('joinNotificationRoom')
-  handleJoinRoom(@ConnectedSocket() client: Socket) {
-    const userId = client.data.userId;
-    client.join(`notification_${userId}`);
+  handleConnection(client: Socket) {
+    const userId = client.handshake.query.userId as string;
+    if (userId) {
+      this.activeUsers.set(Number(userId), client.id);
+    }
   }
 
-  @SubscribeMessage('getUnreadNotifications')
-  async handleGetUnreadNotifications(@ConnectedSocket() client: Socket) {
-    const userId = client.data.userId;
-    return this.notificationService.getUnreadNotifications(userId);
+  handleDisconnect(client: Socket) {
+    for (const [userId, socketId] of this.activeUsers.entries()) {
+      if (socketId === client.id) {
+        this.activeUsers.delete(userId);
+        break;
+      }
+    }
   }
 
-  @SubscribeMessage('markNotificationAsRead')
-  async handleMarkAsRead(
-    @ConnectedSocket() client: Socket,
-    @WsMessageBody() notificationId: number,
-  ) {
-    await this.notificationService.markAsRead(notificationId);
-    return { status: 'marked as read' };
+  notifyUser(userId: number, message: string) {
+    const socketId = this.activeUsers.get(userId);
+    if (socketId) {
+      this.server.to(socketId).emit('newNotification', message);
+    }
   }
 
-  // Phương thức này sẽ được gọi từ các service khác khi cần gửi thông báo
-  async sendNotification(
-    userId: number,
-    type: string,
-    content: string,
-    relatedItemId?: number,
-  ) {
-    const notification = await this.notificationService.createNotification(
-      userId,
-      type,
-      content,
-      relatedItemId,
-    );
-    this.server
-      .to(`notification_${userId}`)
-      .emit('newNotification', notification);
+  @SubscribeMessage('getNotifications')
+  async handleGetNotifications(client: Socket) {
+    const userId = Number(client.handshake.query);
+    const notifications =
+      await this.notificationService.getUserNotifications(userId);
+    client.emit('allNotifications', notifications);
   }
-}
-function MessageBody() {
-  throw new Error('Function not implemented.');
 }
