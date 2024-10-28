@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Friend } from './friend.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class FriendService {
@@ -15,6 +16,7 @@ export class FriendService {
     private friendRepository: Repository<Friend>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async sendFriendRequest(requesterId: number, recipientId: number) {
@@ -28,6 +30,8 @@ export class FriendService {
       recipient,
       status: 'pending',
     });
+    const message = ' Bạn nhận được 1 lời mời kết bạn';
+    await this.notificationService.createNotification(recipientId, message);
 
     return this.friendRepository.save(newFriendRequest);
   }

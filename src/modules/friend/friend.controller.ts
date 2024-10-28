@@ -7,7 +7,6 @@ import {
   Post,
   Param,
   Get,
-  Req,
   UseGuards,
   Query,
   Delete,
