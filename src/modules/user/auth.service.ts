@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDto } from './dto/registerUser.dto';
@@ -89,9 +90,7 @@ export class AuthService {
       userByEmail.password,
     );
     if (!isMathchPassword) {
-      return {
-        success: false,
-      };
+      throw new UnauthorizedException('Thông tin đăng nhập không hợp lệ');
     }
     if (!userByEmail.isConfirmed) {
       return {
