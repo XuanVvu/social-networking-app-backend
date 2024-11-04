@@ -8,6 +8,10 @@ services:
       - .env
     depends_on:
       - mysql-db
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start
 
   mysql-db:
     image: mysql/mysql-server:8.0
