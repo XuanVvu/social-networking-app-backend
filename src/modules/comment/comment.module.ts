@@ -6,10 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentService } from './comment.service';
 import { UserService } from '@/modules/user/user.service';
 import { User } from '@/modules/user/user.entity';
+import { Notification } from '@/modules/notification/notification.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post, User, Comment])],
-  providers: [CommentService, UserService],
+  imports: [TypeOrmModule.forFeature([Post, User, Comment, Notification])],
+  providers: [CommentService, UserService, NotificationService],
   controllers: [CommentController],
 })
 export class CommentModule {}

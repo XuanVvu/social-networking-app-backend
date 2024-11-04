@@ -26,6 +26,7 @@ export class AuthService {
     if (userByEmail) {
       throw new BadRequestException('Email already exists');
     }
+    console.log(userByEmail);
 
     //hash password
 

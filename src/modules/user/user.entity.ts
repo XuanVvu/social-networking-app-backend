@@ -8,10 +8,10 @@ import { Post } from '@/modules/post/post.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { Friend } from '@/modules/friend/friend.entity';
 import { SharedPost } from '@/modules/share-post/share-post.entity';
-import { Notification } from '@/modules/notification/notification.entity';
 import { SavedPost } from '@/modules/saved-post/saved-post.entity';
 import { Chat } from '@/modules/chat/chat.entity';
 import { Message } from '@/modules/message/message.entity';
+import { Notification } from '@/modules/notification/notification.entity';
 
 enum ROLES {
   ADMIN = 'ADMIN',
@@ -88,7 +88,7 @@ export class User extends BaseEntity {
   @OneToMany(() => SharedPost, (sharedPost) => sharedPost.sharedBy)
   sharedPosts: SharedPost[];
 
-  @OneToMany(() => Notification, (notification) => notification.recipient)
+  @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
 
   @OneToMany(() => SavedPost, (savedPost) => savedPost.user)

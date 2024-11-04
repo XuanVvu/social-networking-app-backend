@@ -6,10 +6,11 @@ import { LoggerService } from '@/shared/services/logger.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FriendController } from './friend.controller';
-
+import { NotificationService } from '../notification/notification.service';
+import { Notification } from '@/modules/notification/notification.entity';
 @Module({
   controllers: [FriendController],
-  providers: [FriendService, UserService, LoggerService],
-  imports: [TypeOrmModule.forFeature([User, Friend])],
+  providers: [FriendService, UserService, LoggerService, NotificationService],
+  imports: [TypeOrmModule.forFeature([User, Friend, Notification])],
 })
 export class FriendModule {}

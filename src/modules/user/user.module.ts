@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { UserController } from './user.controller';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { UserService } from './user.service';
       signOptions: { expiresIn: 10 },
     }),
   ],
-  providers: [UserService, AuthService, JwtService],
+  providers: [UserService, AuthService, JwtService, MailService],
   controllers: [UserController],
   exports: [TypeOrmModule.forFeature([User]), UserService],
 })
