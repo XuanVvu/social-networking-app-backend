@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -26,23 +27,26 @@ export class AuthService {
     if (userByEmail) {
       throw new BadRequestException('Email already exists');
     }
-    console.log(userByEmail);
-
     //hash password
 
     const hashedPassword = await bcrypt.hash(requestBody.password, 10);
-
     requestBody.password = hashedPassword;
+
+    //generate jwt token
+    let confirmationToken: string;
+    try {
+      confirmationToken = await this.jwtService.signAsync(
+        { email: requestBody.email },
+        { secret: `${process.env.JWT_SECRET}`, expiresIn: '1h' },
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Could not generate token');
+    }
 
     // save to db
     const newUser = await this.userService.createUser(requestBody);
-    //generate jwt token
-
-    const confirmationToken = this.jwtService.sign(
-      { email: newUser.email },
-      { expiresIn: '1h' },
-    );
     this.userService.saveConfirmationToken(newUser.id, confirmationToken);
+
     const confirmationUrl = `${process.env.APP_URL}/auth/confirm?token=${confirmationToken}`;
     await this.mailService.sendConfirmationEmail(
       newUser.email,
