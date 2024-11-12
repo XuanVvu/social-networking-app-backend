@@ -1,3 +1,4 @@
+import { MailModule } from '@/modules/mail/mail.module';
 import { FriendModule } from './modules/friend/friend.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,6 +14,7 @@ import { ChatModule } from '@/modules/chat/chat.module';
 import { CommentModule } from '@/modules/comment/comment.module';
 import { SavedPostModule } from '@/modules/saved-post/saved-post.module';
 import { MessageModule } from '@/modules/message/message.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -24,16 +26,12 @@ import { MessageModule } from '@/modules/message/message.module';
         username: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
-        // host: 'localhost',
-        // port: 3306,
-        // username: 'root',
-        // password: 'Xuanvu0307@',
-        // database: 'posts',
         entities: ['dist/**/**/*.entity{.js, .ts}'],
         migrations: ['dist/database/migrations/*{.js, .ts}'],
         synchronize: true,
       }),
     }),
+    MailModule,
     UserModule,
     PhotoModule,
     ProductsModule,

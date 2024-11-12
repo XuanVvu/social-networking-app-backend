@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
@@ -9,7 +10,7 @@ export class MailService {
       service: 'gmail',
       auth: {
         user: 'nguyenxuanvu0307.tx@gmail.com',
-        pass: 'Xuanvu0307@@@',
+        pass: 'xgpjsqtomuzukgkk',
       },
     });
   }
@@ -39,7 +40,12 @@ export class MailService {
       from: 'nguyenxuanvu0307.tx@gmail.com',
       to: email,
       subject: 'Confirm your account',
-      template: './confirmation',
+      template: {
+        dir: join(__dirname, 'src/modules/mail/templates'),
+        option: {
+          stric: true,
+        },
+      },
       context: {
         confirmationUrl,
       },
