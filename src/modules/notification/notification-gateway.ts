@@ -54,6 +54,3 @@ export class NotificationGateway {
       .emit('newNotification', notification);
   }
 }
-function MessageBody() {
-  throw new Error('Function not implemented.');
-}

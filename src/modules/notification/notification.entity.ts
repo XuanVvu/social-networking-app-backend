@@ -1,12 +1,6 @@
 import { BaseEntity } from '@/common/base.entity';
 import { User } from '@/modules/user/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Notification extends BaseEntity {
