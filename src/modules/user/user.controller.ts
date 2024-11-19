@@ -5,8 +5,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -14,6 +12,7 @@ import {
   Req,
   UploadedFile,
   UploadedFiles,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -21,6 +20,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { CurrentUser } from '@/shared/decorator/currentUser.decorator';
 import { AuthGuard } from '@/shared/guards/auth.guard';
+import { RoleGuard } from '@/shared/guards/role.guard';
 import {
   imageFileFilter,
   storageConfig,
@@ -35,6 +35,7 @@ import { ChangePasswordDto } from '@/modules/user/dto/ChangePassword.dto';
 
 @Controller('api/v1/users')
 @UseInterceptors(ClassSerializerInterceptor)
+// @UseFilters(HttpExceptionFilter)
 export class UserController {
   constructor(
     private userService: UserService,
@@ -64,16 +65,13 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() requestBody: LoginDto) {
-    const result = await this.authService.login(requestBody);
-
+    const result = (await this.authService.login(requestBody)) as any;
     if (!result.success) {
-      // Bạn có thể ném lỗi tùy chỉnh tại đây nếu cần
-      throw new HttpException(
-        'Thông tin đăng nhập không chính xác',
-        HttpStatus.FORBIDDEN,
-      );
+      return {
+        success: false,
+        message: 'Thông tin đăng nhập không chính xác',
+      };
     }
-
     return {
       success: true,
       message: 'Đăng nhập thành công',

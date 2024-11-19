@@ -26,10 +26,12 @@ export class MessageGateway
 
   async handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
+    // Nếu cần, có thể thêm logic xử lý tại đây
   }
 
   async handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
+    // Nếu cần, có thể thêm logic xử lý tại đây
   }
 
   @SubscribeMessage('sendMessage')

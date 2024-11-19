@@ -5,6 +5,7 @@ import { MessageService } from './message.service';
 import { MessageController } from './message.controller';
 import { MessageGateway } from './message.gateway';
 import { ChatModule } from '../chat/chat.module';
+import { UserModule } from '../user/user.module';
 import { UserService } from '@/modules/user/user.service';
 import { User } from '@/modules/user/user.entity';
 import { ChatService } from '@/modules/chat/chat.service';

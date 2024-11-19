@@ -1,12 +1,15 @@
 import {
+  BadRequestException,
   ForbiddenException,
   HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Permission } from '@/shared/helpers/checkPermission.helper';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/registerUser.dto';
+// import { RegisterUserDto } from './dto/registerUser.dto';
 import { User } from './user.entity';
 import { UpdateUserDto } from '@/modules/user/dto/updateUser.dto';
 import * as bcrypt from 'bcrypt';

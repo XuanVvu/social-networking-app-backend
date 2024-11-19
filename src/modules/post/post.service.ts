@@ -137,7 +137,7 @@ export class PostService {
     );
   }
 
-  async deletePost(id: number): Promise<void> {
+  async deletePost(id: number, currentUser: User): Promise<void> {
     return this.transactionService.executeInTransaction(
       async (entityManager) => {
         try {

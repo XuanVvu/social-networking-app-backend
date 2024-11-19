@@ -1,7 +1,13 @@
 import { BaseEntity } from '@/common/base.entity';
 import { Post } from '@/modules/post/post.entity';
 import { User } from '@/modules/user/user.entity';
-import { Entity, ManyToOne, CreateDateColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  Column,
+} from 'typeorm';
 
 @Entity()
 export class SharedPost extends BaseEntity {

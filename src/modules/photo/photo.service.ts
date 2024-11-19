@@ -2,6 +2,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PhotoDto } from './photo.dto';
+// import { PhotoDto } from './photo.dto';
 import { Photo } from './photo.entity';
 
 @Injectable()

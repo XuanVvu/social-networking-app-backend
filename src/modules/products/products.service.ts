@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Permission } from '@/shared/helpers/checkPermission.helper';
+// import { Permission } from 'src/helpers/checkPermission.helper';
 import { User } from '@/modules/user/user.entity';
 import { Repository } from 'typeorm';
 import { ProductsDTO } from './dto/product.dto';
