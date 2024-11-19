@@ -1,4 +1,3 @@
-import { Chat } from '@/modules/chat/chat.entity';
 import { CreateChatDto } from '@/modules/chat/dto/createChat.dto';
 import { User } from '@/modules/user/user.entity';
 import { CurrentUser } from '@/shared/decorator/currentUser.decorator';

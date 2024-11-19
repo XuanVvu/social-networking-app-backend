@@ -1,6 +1,6 @@
 import { BaseEntity } from '@/common/base.entity';
 import { User } from '@/modules/user/user.entity';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import { Entity, ManyToOne, Column } from 'typeorm';
 
 @Entity()
 export class Friend extends BaseEntity {
