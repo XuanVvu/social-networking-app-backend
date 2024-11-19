@@ -3,7 +3,7 @@ import { BaseEntity } from '@/common/base.entity';
 import { Product } from '@/modules/products/products.entity';
 import { Comment } from '@/modules/comment/comment.entity';
 
-import { Entity, Column, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Post } from '@/modules/post/post.entity';
 import { PostLike } from '@/modules/post-like/post-like.entity';
 import { Friend } from '@/modules/friend/friend.entity';

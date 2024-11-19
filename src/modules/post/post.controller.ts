@@ -100,10 +100,7 @@ export class PostController {
   }
 
   @Delete('/delete/:id')
-  async deleteUser(
-    @Param('id', ParseIntPipe) id: number,
-    @CurrentUser() currentUser: User,
-  ) {
-    return await this.postService.deletePost(id, currentUser);
+  async deleteUser(@Param('id', ParseIntPipe) id: number) {
+    return await this.postService.deletePost(id);
   }
 }
