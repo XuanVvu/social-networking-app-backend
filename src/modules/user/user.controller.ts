@@ -5,6 +5,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -62,13 +64,16 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() requestBody: LoginDto) {
-    const result = (await this.authService.login(requestBody)) as any;
+    const result = await this.authService.login(requestBody);
+
     if (!result.success) {
-      return {
-        success: false,
-        message: 'Thông tin đăng nhập không chính xác',
-      };
+      // Bạn có thể ném lỗi tùy chỉnh tại đây nếu cần
+      throw new HttpException(
+        'Thông tin đăng nhập không chính xác',
+        HttpStatus.FORBIDDEN,
+      );
     }
+
     return {
       success: true,
       message: 'Đăng nhập thành công',

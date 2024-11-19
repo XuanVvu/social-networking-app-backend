@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserService } from './user.service';
@@ -63,9 +68,7 @@ export class AuthService {
       userByEmail.password,
     );
     if (!isMathchPassword) {
-      return {
-        success: false,
-      };
+      throw new HttpException('Invalid password', HttpStatus.FORBIDDEN);
     }
     const payload = {
       id: userByEmail.id,
